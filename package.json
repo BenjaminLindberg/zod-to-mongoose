@@ -1,6 +1,6 @@
 {
   "name": "zod-to-mongoose",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A library that allows you to create mongoose schemas derived from zod schemas, in an intiutive yet powerful way. Works without the need to add non-standard types to your zod schemas.",
   "author": {
     "name": "Benjamin Lindberg"
@@ -26,7 +26,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
   },
