@@ -55,7 +55,8 @@ export type SchemaOptions<T extends ZodRawShape> = StrictSchemaOptions<T>;
 export type Paths = string[] | NestedRecord<boolean>;
 
 export interface IParseObject<T extends ZodRawShape> {
-  schema: ZodObject<T>;
+  // Use any to avoid infinite instantiation
+  schema: unknown;
 
   // Booleans
   options?: SchemaOptions<T>;
@@ -64,5 +65,6 @@ export interface IParseObject<T extends ZodRawShape> {
   // To be able to build the full path
   parentStack?: string[];
 }
+
 export interface IGenerateSchema<T extends ZodRawShape>
   extends Omit<IParseObject<T>, "parentStack"> {}
