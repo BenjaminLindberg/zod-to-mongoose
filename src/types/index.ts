@@ -1,7 +1,11 @@
 import type { ZodObject, ZodRawShape } from "zod/v4";
 import { _ZTM, IZtm } from "../utils/ztm";
 
-export type NestedRecord<T> = { [key: string]: NestedRecord<T> | T };
+type Decrement = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; // up to 10 levels
+
+export type NestedRecord<T, Depth extends number = 10> = Depth extends 0
+  ? T
+  : { [key: string]: NestedRecord<T, Decrement[Depth]> | T };
 
 export type PropertyAtPath<T, K extends readonly string[]> = K extends [
   infer Head,
@@ -15,20 +19,30 @@ export type PropertyAtPath<T, K extends readonly string[]> = K extends [
       : undefined
     : undefined
   : T;
-
-export type NestedOptions<TShape extends ZodRawShape, TValue> = {
-  [K in keyof TShape]?: TShape[K] extends ZodObject<infer InnerShape>
-    ? NestedOptions<InnerShape, TValue>
-    : TValue;
-};
+export type NestedOptions<
+  TShape extends ZodRawShape,
+  TValue,
+  Depth extends number = 10
+> = Depth extends 0
+  ? TValue
+  : {
+      [K in keyof TShape]?: TShape[K] extends ZodObject<infer InnerShape>
+        ? NestedOptions<InnerShape, TValue, Decrement[Depth]>
+        : TValue;
+    };
 
 type FlexibleOptionType = IZtm | _ZTM;
 
-type StrictSchemaOptions<T extends ZodRawShape> = {
-  [K in keyof T]?: T[K] extends ZodObject<infer InnerShape>
-    ? StrictSchemaOptions<InnerShape> // Nested objects recursively allow same flexibility
-    : FlexibleOptionType; // At leaf nodes: IZtm or _ZTM object
-};
+type StrictSchemaOptions<
+  T extends ZodRawShape,
+  Depth extends number = 10 // Limit recursion to 10 levels
+> = Depth extends 0
+  ? unknown
+  : {
+      [K in keyof T]?: T[K] extends ZodObject<infer InnerShape>
+        ? StrictSchemaOptions<InnerShape, Decrement[Depth]>
+        : FlexibleOptionType;
+    };
 
 /**
  * SchemaOptions now:
