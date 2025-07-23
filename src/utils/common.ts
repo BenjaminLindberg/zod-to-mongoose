@@ -15,6 +15,18 @@ export const isDefined = <T>(value: T | undefined | null): value is T => {
   return value !== undefined && value !== null;
 };
 
+export function stripUndefined<T extends Record<string, any>>(
+  obj: T
+): Partial<T> {
+  const cleaned: Partial<T> = {};
+  for (const key in obj) {
+    if (obj[key] !== undefined) {
+      cleaned[key] = obj[key];
+    }
+  }
+  return cleaned;
+}
+
 export function safeAccessProperty<
   O extends object,
   K extends PropertyKey

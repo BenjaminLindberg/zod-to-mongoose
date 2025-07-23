@@ -35,6 +35,7 @@ import {
   getInnerType,
   isDefined,
   safeAccessProperty,
+  stripUndefined,
 } from "./common";
 
 export const parseField = <T>(args: {
@@ -364,20 +365,24 @@ export const parseObject = <T extends ZodRawShape>({
     ZodType<any>
   ][]) {
     if (field.def.type === "object") {
-      object[key] = parseObject({
-        schema: field as ZodObject<any, any>,
-        parentStack: [...parentStack, key],
-        ...options,
-      });
+      object[key] = stripUndefined(
+        parseObject({
+          schema: field as ZodObject<any, any>,
+          parentStack: [...parentStack, key],
+          ...options,
+        })
+      );
     } else {
-      const f = parseField({
-        field: field as ZodType<any>,
-        options: getFieldOptions({
-          properties: globalOptions,
-          parentStack,
-          key,
-        }),
-      });
+      const f = stripUndefined(
+        parseField({
+          field: field as ZodType<any>,
+          options: getFieldOptions({
+            properties: globalOptions,
+            parentStack,
+            key,
+          }),
+        })
+      );
 
       object[key] = f;
     }
