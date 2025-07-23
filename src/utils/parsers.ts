@@ -369,7 +369,7 @@ export const parseObject = <T extends ZodRawShape>({
         parseObject({
           schema: field as ZodObject<any, any>,
           parentStack: [...parentStack, key],
-          ...options,
+          ...stripUndefined(options),
         })
       );
     } else {

@@ -15,16 +15,26 @@ export const isDefined = <T>(value: T | undefined | null): value is T => {
   return value !== undefined && value !== null;
 };
 
-export function stripUndefined<T extends Record<string, any>>(
-  obj: T
-): Partial<T> {
-  const cleaned: Partial<T> = {};
-  for (const key in obj) {
-    if (obj[key] !== undefined) {
-      cleaned[key] = obj[key];
-    }
+export function stripUndefined<T>(obj: T): T {
+  if (Array.isArray(obj)) {
+    return obj.map((item: any) => stripUndefined(item)) as any;
   }
-  return cleaned;
+
+  if (obj !== null && typeof obj === "object") {
+    const cleaned: any = {};
+    for (const key in obj) {
+      const value = (obj as any)[key];
+      if (value !== undefined) {
+        const nested = stripUndefined(value);
+        if (nested !== undefined) {
+          cleaned[key] = nested;
+        }
+      }
+    }
+    return cleaned;
+  }
+
+  return obj;
 }
 
 export function safeAccessProperty<
