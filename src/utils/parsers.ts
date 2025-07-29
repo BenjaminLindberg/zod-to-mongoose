@@ -89,6 +89,7 @@ export const parseField = <T>(args: {
   } else if (field instanceof ZodOptional) {
     return parseField({
       ...args,
+      required: false,
       field: getInnerType(field),
     });
   } else if (field instanceof ZodNullable) {
@@ -132,7 +133,7 @@ export const parseMixed = (args: {
   options?: IZtm["_ztm"];
   validate?: Field<any>["validate"];
 }): mField => {
-  const { default: def, required = true, validate, options } = args;
+  const { default: def, required, validate, options } = args;
 
   return {
     ...options,
@@ -381,6 +382,7 @@ export const parseObject = <T extends ZodRawShape>({
             parentStack,
             key,
           }),
+          required: true,
         })
       );
 

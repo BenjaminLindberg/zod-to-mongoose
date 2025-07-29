@@ -13,6 +13,12 @@ Inspired by libraries like `@zodyac/zod-mongoose` but without intrusive extensio
 - **No monkey-patching:** Avoid altering Zod’s internals.
 - **Optional overrides:** Provide Mongoose-specific field options externally via a simple API.
 
+## TODO
+
+- ObjectIds, UUIDs
+- Pipe (zod)
+- Other refinements??
+
 ---
 
 ## Features
@@ -23,7 +29,6 @@ Inspired by libraries like `@zodyac/zod-mongoose` but without intrusive extensio
   - Optionals, Nullables
   - Defaults, Enums
 - Supports:
-  - ObjectIds, UUIDs
   - `unique`, `index`, and other Mongoose options
 - Mongoose schema types:
   - String, Number, BigInt, Date, Boolean
