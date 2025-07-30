@@ -54,6 +54,7 @@ export const parseField = <T>(args: {
         "defaultValue" in field.def
           ? Object.getOwnPropertyDescriptor(field.def, "defaultValue")?.get
           : undefined,
+      required: false,
       field: getInnerType(field),
     });
   } else if (field instanceof ZodObject) {
@@ -126,34 +127,37 @@ export const parseField = <T>(args: {
   }
 };
 
-export const parseMixed = (args: {
+export const parseMixed = ({
+  field,
+  options,
+  ...args
+}: {
   field: ZodType;
   default?: any;
   required?: boolean;
   options?: IZtm["_ztm"];
   validate?: Field<any>["validate"];
 }): mField => {
-  const { default: def, required, validate, options } = args;
-
   return {
     ...options,
+    ...args,
     type: Schema.Types.Mixed,
-    default: def,
-    required,
-    validate,
   };
 };
 
-export const parseArray = <T extends ZodType>(args: {
+export const parseArray = <T extends ZodType>({
+  field: _field,
+  options,
+  ...args
+}: {
   field: ZodType;
   default?: any[];
   required?: boolean;
   options?: _ZTM;
 }): mArray<any> => {
-  const { field: _field, options } = args;
-
   const field = parseField({
     ...args,
+    field: _field,
     options,
   });
 
@@ -168,8 +172,8 @@ export const parseArray = <T extends ZodType>(args: {
 };
 
 export const parseBoolean = <T extends ZodBoolean>({
-  default: def,
   options,
+  field: _field,
   ...args
 }: {
   field: T;
@@ -185,8 +189,6 @@ export const parseBoolean = <T extends ZodBoolean>({
 };
 
 export const parseMap = <T, K>({
-  default: def,
-  required = true,
   options,
   ...args
 }: {
@@ -206,7 +208,6 @@ export const parseMap = <T, K>({
     ...options,
     type: Map,
     of: field as Field<K>,
-    default: def,
   };
 };
 
